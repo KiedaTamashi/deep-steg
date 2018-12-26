@@ -4,15 +4,14 @@ import random
 import scipy.misc
 from keras.preprocessing import image
 import os
+import subprocess
+
 
 DATA_DIR = "./data"
 TRAIN_DIR = os.path.join(DATA_DIR, "train")
 TEST_DIR = os.path.join(DATA_DIR, "test")
 
 IMG_SHAPE = (64, 64)
-
-# Variable used to weight the losses of the secret and cover images (See paper for more details)
-beta = 1.0
 
 
 
@@ -135,3 +134,69 @@ def load_dataset_small(num_images_per_class_train=10, num_images_test=500):
 
     # Return train and test data as numpy arrays.
     return np.array(X_train), np.array(X_test)
+
+def ffmpegProcess(code):
+    '''
+    run ffmepg code
+    '''
+    getmp3 = code
+    returnget = subprocess.call(getmp3,shell=True)
+    print(returnget)
+
+def extractFrameOfVideo(video_path,frame_rate=30,frame_save_path='./coverSource'):
+    DivideCode = 'ffmpeg -i ' + video_path + ' -r '+str(frame_rate)+' '+frame_save_path+'%06d.png'
+    ffmpegProcess(DivideCode)
+
+def generateVideo(frame_save_path='./hideSource',output_path='./test.mp4',frame_rate=30):
+    generateCode = "ffmpeg -framerate "+str(frame_rate)+" -i "+frame_save_path+"\%06d.png -vcodec libx264 -r "\
+                   +str(frame_rate)+" -pix_fmt yuv420p "+output_path
+    ffmpegProcess(generateCode)
+
+def readFrames(file_path):
+    '''
+    :return: list of framePath and num of file
+    '''
+    fs = os.listdir(file_path)
+    fs.sort(key=lambda x: int(x[:-4]))
+    file_name_list = []
+    cnt=0
+    for f in fs:
+        file_name_list.append(os.path.join(file_path,f))
+        cnt += 1
+    return file_name_list,cnt
+
+def randomSort(file_name_list,length,key,mode='encode'):
+    '''
+    if you want to recover the length and key must keep same
+    :param file_name_list:
+    :param length: number of files
+    :param key: as seed
+    :return: resorted list
+    '''
+
+    random.seed(key)
+    # generate the random order
+    rs = random.sample(range(length),length)
+    resorted_list = []
+    if mode=='encode':
+        for i in range(length):
+            resorted_list.append(file_name_list[rs[i]])
+        print(resorted_list)
+    elif mode =='decode':
+        tmp = list(range(length))
+        for i in range(length):
+            tmp[rs[i]] = file_name_list[i]
+        resorted_list = tmp
+        print(resorted_list)
+    else:
+        print('mode wrong\n')
+
+    return resorted_list
+
+
+a = list(range(10))
+print(a)
+b = randomSort(a,10,2)
+randomSort(b,10,2,mode='decode')
+b = randomSort(a,10,2)
+randomSort(b,10,2,mode='decode')
