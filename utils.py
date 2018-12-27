@@ -5,7 +5,7 @@ import scipy.misc
 from keras.preprocessing import image
 import os
 import subprocess
-
+import easygui
 
 DATA_DIR = "./data"
 TRAIN_DIR = os.path.join(DATA_DIR, "train")
@@ -112,9 +112,12 @@ def load_dataset_small(num_images_per_class_train=10, num_images_test=500):
     X_train = []
     X_test = []
 
+    # Get training image directory.
+    path = easygui.diropenbox()
+
     # Create training set.
-    for c in os.listdir(TRAIN_DIR):
-        c_dir = os.path.join(TRAIN_DIR, c, 'images')
+    for c in os.listdir(path):
+        c_dir = os.path.join(path, c, 'images')
         c_imgs = os.listdir(c_dir)
         random.shuffle(c_imgs)
         for img_name_i in c_imgs[0:num_images_per_class_train]:
