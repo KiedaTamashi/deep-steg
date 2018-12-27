@@ -79,7 +79,7 @@ def result_display(input_S,input_C,decoded_S,decoded_C,
 
 
     plt.figure(figsize=(14, 15))
-    rand_indx = [random.randint(0, 1000) for x in range(n)]
+    rand_indx = [random.randint(0, len(input_C)) for x in range(n)]
     # for i, idx in enumerate(range(0, n)):
     for i, idx in enumerate(rand_indx):
         n_col = 6 if SHOW_DIFF else 4
@@ -102,7 +102,7 @@ def result_display(input_S,input_C,decoded_S,decoded_C,
     plt.show()
 
 
-def load_dataset_small(num_images_per_class_train=10, num_images_test=500):
+def load_dataset_small(num_images_per_class_train, num_images_test, train_set_range):
     """Loads training and test datasets, from Tiny ImageNet Visual Recogition Challenge.
 
     Arguments:
@@ -112,12 +112,16 @@ def load_dataset_small(num_images_per_class_train=10, num_images_test=500):
     X_train = []
     X_test = []
 
-    # Get training image directory.
-    path = easygui.diropenbox()
+    # Get training dataset directory. It should contain 'train' folder and 'test' folder.
+    path = easygui.diropenbox(title = 'Choose dataset directory')
 
     # Create training set.
-    for c in os.listdir(path):
-        c_dir = os.path.join(path, c, 'images')
+    train_set = os.listdir(os.path.join(path, 'train'))
+    for c in train_set:
+        train_set_range = train_set_range - 1
+        if train_set_range < 0:
+            break
+        c_dir = os.path.join(path, 'train', c, 'images')
         c_imgs = os.listdir(c_dir)
         random.shuffle(c_imgs)
         for img_name_i in c_imgs[0:num_images_per_class_train]:
@@ -127,7 +131,7 @@ def load_dataset_small(num_images_per_class_train=10, num_images_test=500):
     random.shuffle(X_train)
 
     # Create test set.
-    test_dir = os.path.join(TEST_DIR, 'images')
+    test_dir = os.path.join(path, 'test','images')
     test_imgs = os.listdir(test_dir)
     random.shuffle(test_imgs)
     for img_name_i in test_imgs[0:num_images_test]:

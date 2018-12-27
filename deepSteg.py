@@ -232,9 +232,9 @@ def validation(input_S,input_C):
     result_display(input_S,input_C,decoded_S,decoded_C)
 
 # Load dataset.
-def load_data_preprocess():
-    #TODO we must overwrite the function 'load_dataset_small'
-    X_train_orig, X_test_orig = load_dataset_small()
+def load_data_preprocess(num_images_per_class_train, num_images_test, train_set_range = 200):
+    #TODO try to reset the input values and test.
+    X_train_orig, X_test_orig = load_dataset_small(num_images_per_class_train, num_images_test, train_set_range)
 
     # Normalize image vectors.
     X_train = X_train_orig / 255.
@@ -262,10 +262,10 @@ def main():
 
 
     if option == 'validation':
-        input_S, input_C = load_data_preprocess()
+        input_S, input_C = load_data_preprocess(10, 500, 100)
         validation(input_S,input_C)
     elif option == 'train':
-        input_S, input_C = load_data_preprocess()
+        input_S, input_C = load_data_preprocess(10, 500, 100)
         train(input_S, input_C)
 
 if __name__ =="__main__":
