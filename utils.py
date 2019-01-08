@@ -86,19 +86,19 @@ def result_display(input_S,input_C,decoded_S,decoded_C,
     for i, idx in enumerate(rand_indx):
         n_col = 6 if SHOW_DIFF else 4
 
-        show_image(input_C[idx], n, n_col, i * n_col + 1, gray=SHOW_GRAY, first_row=i == 0, title='Cover')
+        show_image(input_C[i], n, n_col, i * n_col + 1, gray=SHOW_GRAY, first_row=i == 0, title='Cover')
 
-        show_image(input_S[idx], n, n_col, i * n_col + 2, gray=SHOW_GRAY, first_row=i == 0, title='Secret')
+        show_image(input_S[i], n, n_col, i * n_col + 2, gray=SHOW_GRAY, first_row=i == 0, title='Secret')
 
-        show_image(decoded_C[idx], n, n_col, i * n_col + 3, gray=SHOW_GRAY, first_row=i == 0, title='Encoded Cover')
+        show_image(decoded_C[i], n, n_col, i * n_col + 3, gray=SHOW_GRAY, first_row=i == 0, title='Encoded Cover')
 
-        show_image(decoded_S[idx], n, n_col, i * n_col + 4, gray=SHOW_GRAY, first_row=i == 0, title='Decoded Secret')
+        show_image(decoded_S[i], n, n_col, i * n_col + 4, gray=SHOW_GRAY, first_row=i == 0, title='Decoded Secret')
 
         if SHOW_DIFF:
-            show_image(np.multiply(diff_C[idx], ENHANCE), n, n_col, i * n_col + 5, gray=SHOW_GRAY, first_row=i == 0,
+            show_image(np.multiply(diff_C[i], ENHANCE), n, n_col, i * n_col + 5, gray=SHOW_GRAY, first_row=i == 0,
                        title='Diff Cover')
 
-            show_image(np.multiply(diff_S[idx], ENHANCE), n, n_col, i * n_col + 6, gray=SHOW_GRAY, first_row=i == 0,
+            show_image(np.multiply(diff_S[i], ENHANCE), n, n_col, i * n_col + 6, gray=SHOW_GRAY, first_row=i == 0,
                        title='Diff Secret')
 
     plt.show()
@@ -141,7 +141,7 @@ def load_dataset_small(num_images_per_class_train, num_images_test, train_set_ra
 
     # Get training dataset directory. It should contain 'train' folder and 'test' folder.
     # path = easygui.diropenbox(title = 'Choose dataset directory')
-    path = './data'
+    path = './exp'
     # Create training set.
     train_set = os.listdir(os.path.join(path, 'train'))
     for c in train_set:

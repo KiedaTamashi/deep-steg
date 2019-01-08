@@ -242,16 +242,18 @@ def load_data_preprocess(num_images_per_class_train, num_images_test, train_set_
     # Print statistics.
     print("Number of training examples = " + str(X_train.shape[0]))
     print("Number of test examples = " + str(X_test.shape[0]))
-    print("X_train shape: " + str(X_train.shape))  # Should be (train_size, 64, 64, 3).
+
 
     # We split training set into two halfs.
     # First half is used for training as secret images, second half for cover images.
     if option == "train":
         # S: secret image
+        print("X_train shape: " + str(X_train.shape))  # Should be (train_size, 64, 64, 3).
         input_S = X_train[0:X_train.shape[0] // 2]
         # C: cover image
         input_C = X_train[X_train.shape[0] // 2:]
     else:
+        print("X_test shape: " + str(X_test.shape))  # Should be (test_size, 64, 64, 3).
         input_S = X_test[0:X_test.shape[0] // 2]
         # C: cover image
         input_C = X_test[X_test.shape[0] // 2:]
