@@ -229,11 +229,10 @@ def validation(input_S,input_C):
     decoded_S, decoded_C = decoded[...,0:3], decoded[...,3:6]
 
 
-    result_display(input_S,input_C,decoded_S,decoded_C)
-
+    result_display(input_S,input_C,decoded_S,decoded_C,n=decoded_C.shape[0])
+    iamge_save(decoded_S,decoded_C)
 # Load dataset.
-def load_data_preprocess(num_images_per_class_train, num_images_test, train_set_range = 200):
-    #TODO try to reset the input values and test.
+def load_data_preprocess(num_images_per_class_train, num_images_test, train_set_range = 200, option="train"):
     X_train_orig, X_test_orig = load_dataset_small(num_images_per_class_train, num_images_test, train_set_range)
 
     # Normalize image vectors.
@@ -242,17 +241,21 @@ def load_data_preprocess(num_images_per_class_train, num_images_test, train_set_
 
     # Print statistics.
     print("Number of training examples = " + str(X_train.shape[0]))
-    print("Number of test examples = " + str(X_train.shape[0]))
+    print("Number of test examples = " + str(X_test.shape[0]))
     print("X_train shape: " + str(X_train.shape))  # Should be (train_size, 64, 64, 3).
 
     # We split training set into two halfs.
     # First half is used for training as secret images, second half for cover images.
+    if option == "train":
+        # S: secret image
+        input_S = X_train[0:X_train.shape[0] // 2]
+        # C: cover image
+        input_C = X_train[X_train.shape[0] // 2:]
+    else:
+        input_S = X_test[0:X_test.shape[0] // 2]
+        # C: cover image
+        input_C = X_test[X_test.shape[0] // 2:]
 
-    # S: secret image
-    input_S = X_train[0:X_train.shape[0] // 2]
-
-    # C: cover image
-    input_C = X_train[X_train.shape[0] // 2:]
 
     return input_S,input_C
 
@@ -260,12 +263,13 @@ def main():
 
     option = 'validation'
 
-
+    # train_num_per_class  test   train_class
+    # required: n%2==0, first 1/2 be secret, second 1/2 be cover
     if option == 'validation':
-        input_S, input_C = load_data_preprocess(10, 500, 100)
+        input_S, input_C = load_data_preprocess(4, 2, 4, option='validation')
         validation(input_S,input_C)
     elif option == 'train':
-        input_S, input_C = load_data_preprocess(10, 500, 100)
+        input_S, input_C = load_data_preprocess(100, 10, 100)
         train(input_S, input_C)
 
 if __name__ =="__main__":

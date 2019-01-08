@@ -6,6 +6,7 @@ from keras.preprocessing import image
 import os
 import subprocess
 import easygui
+from PIL import Image
 
 DATA_DIR = "./data"
 TRAIN_DIR = os.path.join(DATA_DIR, "train")
@@ -76,7 +77,8 @@ def result_display(input_S,input_C,decoded_S,decoded_C,
     print("S error per pixel [0, 255]:", S_error)
     print("C error per pixel [0, 255]:", C_error)
     # pixel_histogram(diff_S, diff_C)
-
+    if n > 6:
+        n = 6
 
     plt.figure(figsize=(14, 15))
     rand_indx = [random.randint(0, len(input_C)) for x in range(n)]
@@ -101,6 +103,31 @@ def result_display(input_S,input_C,decoded_S,decoded_C,
 
     plt.show()
 
+def MatrixToImage(data):
+    data = data*255
+    new_im = Image.fromarray(data.astype(np.uint8))
+    return new_im
+
+# new display and write
+def iamge_save(decoded_S,decoded_C,path='./outcome'):
+    cover_path = path+'/cover/'
+    secret_path = path + '/secret/'
+    if not os.path.exists(path):
+        os.mkdir(path)
+    if not os.path.exists(path):
+        os.mkdir(cover_path)
+    if not os.path.exists(path):
+        os.mkdir(secret_path)
+    for i in range(decoded_C.shape[0]):
+        d_C = MatrixToImage(decoded_C[i])
+        d_S = MatrixToImage(decoded_S[i])
+        d_C.save(cover_path+f'{i}.jpg')
+        d_S.save(secret_path+f'{i}.jpg')
+
+
+    print('\nFinsh! \n')
+
+
 
 def load_dataset_small(num_images_per_class_train, num_images_test, train_set_range):
     """Loads training and test datasets, from Tiny ImageNet Visual Recogition Challenge.
@@ -113,8 +140,8 @@ def load_dataset_small(num_images_per_class_train, num_images_test, train_set_ra
     X_test = []
 
     # Get training dataset directory. It should contain 'train' folder and 'test' folder.
-    path = easygui.diropenbox(title = 'Choose dataset directory')
-
+    # path = easygui.diropenbox(title = 'Choose dataset directory')
+    path = './data'
     # Create training set.
     train_set = os.listdir(os.path.join(path, 'train'))
     for c in train_set:
@@ -201,9 +228,9 @@ def randomSort(file_name_list,length,key,mode='encode'):
     return resorted_list
 
 
-a = list(range(10))
-print(a)
-b = randomSort(a,10,2)
-randomSort(b,10,2,mode='decode')
-b = randomSort(a,10,2)
-randomSort(b,10,2,mode='decode')
+# a = list(range(10))
+# print(a)
+# b = randomSort(a,10,2)
+# randomSort(b,10,2,mode='decode')
+# b = randomSort(a,10,2)
+# randomSort(b,10,2,mode='decode')
