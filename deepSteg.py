@@ -265,7 +265,7 @@ def main():
 
     option = 'validation'
 
-    # train_num_per_class  test   train_class
+    # train_num_per_class、test、train_class
     # required: n%2==0, first 1/2 be secret, second 1/2 be cover
     if option == 'validation':
         input_S, input_C = load_data_preprocess(4, 2, 4, option='validation')
