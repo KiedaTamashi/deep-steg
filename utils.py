@@ -12,7 +12,7 @@ DATA_DIR = "./data"
 TRAIN_DIR = os.path.join(DATA_DIR, "train")
 TEST_DIR = os.path.join(DATA_DIR, "test")
 
-IMG_SHAPE = (64, 64)
+# IMG_SHAPE = (64, 64)
 
 
 
@@ -109,7 +109,7 @@ def MatrixToImage(data):
     return new_im
 
 # new display and write
-def iamge_save(decoded_S,decoded_C,path='./outcome'):
+def iamge_save(decoded_S,decoded_C,orig_size,path='./outcome'):
     cover_path = path+'/cover/'
     secret_path = path + '/secret/'
     if not os.path.exists(path):
@@ -121,6 +121,9 @@ def iamge_save(decoded_S,decoded_C,path='./outcome'):
     for i in range(decoded_C.shape[0]):
         d_C = MatrixToImage(decoded_C[i])
         d_S = MatrixToImage(decoded_S[i])
+        if d_C.size != orig_size[i]:
+            d_C = d_C.resize(orig_size[i], Image.ANTIALIAS)
+            d_S = d_S.resize(orig_size[i], Image.ANTIALIAS)
         d_C.save(cover_path+f'{i}.jpg')
         d_S.save(secret_path+f'{i}.jpg')
 
@@ -138,6 +141,8 @@ def load_dataset_small(num_images_per_class_train, num_images_test, train_set_ra
     """
     X_train = []
     X_test = []
+    X_test_size = []
+
 
     # Get training dataset directory. It should contain 'train' folder and 'test' folder.
     # path = easygui.diropenbox(title = 'Choose dataset directory')
@@ -163,11 +168,38 @@ def load_dataset_small(num_images_per_class_train, num_images_test, train_set_ra
     random.shuffle(test_imgs)
     for img_name_i in test_imgs[0:num_images_test]:
         img_i = image.load_img(os.path.join(test_dir, img_name_i))
-        x = image.img_to_array(img_i)
+        #resize
+        img_i_reshape,img_ori_size = resize_image(img_i)
+        x = image.img_to_array(img_i_reshape)
         X_test.append(x)
+        X_test_size.append(img_ori_size)
+
 
     # Return train and test data as numpy arrays.
-    return np.array(X_train), np.array(X_test)
+    return np.array(X_train), np.array(X_test), X_test_size
+
+def resize_image(im):
+    '''
+    N*M is resized to N*N
+    :param im: image cls
+    :return: if idx==0  N==M
+    '''
+    (x,y) = im.size
+    if x==y:
+        return im, (x,y)
+    elif x>y:
+        N = y
+        M = x
+        idx_bigger = 1
+    else:
+        N = x
+        M = y
+        idx_bigger = 2
+    out = im.resize((N,N), Image.ANTIALIAS)
+
+    return out, (x,y)
+
+
 
 def ffmpegProcess(code):
     '''

@@ -215,7 +215,7 @@ def train(input_S,input_C,NB_EPOCHS = 1000,BATCH_SIZE = 32, save_model = 'models
     autoencoder_model.save_weights(save_model)
 # ----------------train-----------------------
 
-def validation(input_S,input_C):
+def validation(input_S,input_C,test_orig_size):
 
     encoder_model, reveal_model, autoencoder_model = make_model(input_S.shape[1:])
 
@@ -230,10 +230,10 @@ def validation(input_S,input_C):
 
 
     result_display(input_S,input_C,decoded_S,decoded_C,n=decoded_C.shape[0])
-    iamge_save(decoded_S,decoded_C)
+    iamge_save(decoded_S,decoded_C,test_orig_size)
 # Load dataset.
 def load_data_preprocess(num_images_per_class_train, num_images_test, train_set_range = 200, option="train"):
-    X_train_orig, X_test_orig = load_dataset_small(num_images_per_class_train, num_images_test, train_set_range)
+    X_train_orig, X_test_orig, X_test_orig_size= load_dataset_small(num_images_per_class_train, num_images_test, train_set_range)
 
     # Normalize image vectors.
     X_train = X_train_orig / 255.
@@ -259,7 +259,7 @@ def load_data_preprocess(num_images_per_class_train, num_images_test, train_set_
         input_C = X_test[X_test.shape[0] // 2:]
 
 
-    return input_S,input_C
+    return input_S,input_C,X_test_orig_size
 
 def main():
 
@@ -268,10 +268,10 @@ def main():
     # train_num_per_class、test、train_class
     # required: n%2==0, first 1/2 be secret, second 1/2 be cover
     if option == 'validation':
-        input_S, input_C = load_data_preprocess(4, 2, 4, option='validation')
-        validation(input_S,input_C)
+        input_S, input_C, X_test_orig_size = load_data_preprocess(4, 2, 4, option='validation')
+        validation(input_S,input_C,X_test_orig_size)
     elif option == 'train':
-        input_S, input_C = load_data_preprocess(100, 10, 100)
+        input_S, input_C,_ = load_data_preprocess(100, 10, 100)
         train(input_S, input_C)
 
 if __name__ =="__main__":
