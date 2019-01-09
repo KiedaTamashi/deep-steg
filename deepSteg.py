@@ -264,7 +264,6 @@ def load_data_preprocess(num_images_per_class_train, num_images_test, train_set_
 def main():
 
     option = 'validation'
-
     # train_num_per_class、test、train_class
     # required: n%2==0, first 1/2 be secret, second 1/2 be cover
     if option == 'validation':

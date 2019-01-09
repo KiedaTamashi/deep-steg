@@ -51,10 +51,7 @@ def load_frames_preprocess(num_images_theta=100):
 
     # Print statistics.
     print("Number of test frames = " + str(input_S.shape[0]))
-
     print("input_S shape: " + str(input_S.shape))  # Should be (test_size, 64, 64, 3).
-
-
     return input_S,input_C,X_test_orig_size
 
 

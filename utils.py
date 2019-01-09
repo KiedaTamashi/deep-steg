@@ -261,11 +261,3 @@ def randomSort(file_name_list,length,key,mode='encode'):
         print('mode wrong\n')
 
     return resorted_list
-
-
-# a = list(range(10))
-# print(a)
-# b = randomSort(a,10,2)
-# randomSort(b,10,2,mode='decode')
-# b = randomSort(a,10,2)
-# randomSort(b,10,2,mode='decode')
