@@ -215,7 +215,7 @@ def train(input_S,input_C,NB_EPOCHS = 1000,BATCH_SIZE = 32, save_model = 'models
     autoencoder_model.save_weights(save_model)
 # ----------------train-----------------------
 
-def validation(input_S,input_C,test_orig_size):
+def validation(input_S,input_C,test_orig_size,save_path='./outcome',name_box = None,disp=True):
 
     encoder_model, reveal_model, autoencoder_model = make_model(input_S.shape[1:])
 
@@ -228,9 +228,9 @@ def validation(input_S,input_C,test_orig_size):
     decoded = autoencoder_model.predict([input_S, input_C])
     decoded_S, decoded_C = decoded[...,0:3], decoded[...,3:6]
 
-
-    result_display(input_S,input_C,decoded_S,decoded_C,n=decoded_C.shape[0])
-    iamge_save(decoded_S,decoded_C,test_orig_size)
+    if disp == True:
+        result_display(input_S,input_C,decoded_S,decoded_C,n=decoded_C.shape[0])
+    iamge_save(decoded_S,decoded_C,test_orig_size,path=save_path,name_box=name_box)
 # Load dataset.
 def load_data_preprocess(num_images_per_class_train, num_images_test, train_set_range = 200, option="train"):
     X_train_orig, X_test_orig, X_test_orig_size= load_dataset_small(num_images_per_class_train, num_images_test, train_set_range)

@@ -109,14 +109,14 @@ def MatrixToImage(data):
     return new_im
 
 # new display and write
-def iamge_save(decoded_S,decoded_C,orig_size,path='./outcome'):
+def iamge_save(decoded_S,decoded_C,orig_size,path='./outcome',name_box = None):
     cover_path = path+'/cover/'
     secret_path = path + '/secret/'
     if not os.path.exists(path):
         os.mkdir(path)
-    if not os.path.exists(path):
+    if not os.path.exists(cover_path):
         os.mkdir(cover_path)
-    if not os.path.exists(path):
+    if not os.path.exists(secret_path):
         os.mkdir(secret_path)
     for i in range(decoded_C.shape[0]):
         d_C = MatrixToImage(decoded_C[i])
@@ -124,11 +124,13 @@ def iamge_save(decoded_S,decoded_C,orig_size,path='./outcome'):
         if d_C.size != orig_size[i]:
             d_C = d_C.resize(orig_size[i], Image.ANTIALIAS)
             d_S = d_S.resize(orig_size[i], Image.ANTIALIAS)
-        d_C.save(cover_path+f'{i}.jpg')
-        d_S.save(secret_path+f'{i}.jpg')
-
-
-    print('\nFinsh! \n')
+        if name_box==None:
+            d_C.save(cover_path+f'{i}.png')
+            d_S.save(secret_path+f'{i}.png')
+        else:
+            d_C.save(cover_path + str(name_box[i])+r'.png')
+            d_S.save(secret_path + str(name_box[i])+r'.png')
+    print('\nFinsh! ')
 
 
 
@@ -145,8 +147,8 @@ def load_dataset_small(num_images_per_class_train, num_images_test, train_set_ra
 
 
     # Get training dataset directory. It should contain 'train' folder and 'test' folder.
-    # path = easygui.diropenbox(title = 'Choose dataset directory')
-    path = './exp'
+    path = easygui.diropenbox(title = 'Choose dataset directory')
+    # path = './exp'
     # Create training set.
     train_set = os.listdir(os.path.join(path, 'train'))
     for c in train_set:
@@ -207,14 +209,15 @@ def ffmpegProcess(code):
     '''
     getmp3 = code
     returnget = subprocess.call(getmp3,shell=True)
-    print(returnget)
+    # print(returnget)
 
 def extractFrameOfVideo(video_path,frame_rate=30,frame_save_path='./coverSource'):
     DivideCode = 'ffmpeg -i ' + video_path + ' -r '+str(frame_rate)+' '+frame_save_path+'%06d.png'
     ffmpegProcess(DivideCode)
+    return
 
-def generateVideo(frame_save_path='./hideSource',output_path='./test.mp4',frame_rate=30):
-    generateCode = "ffmpeg -framerate "+str(frame_rate)+" -i "+frame_save_path+"\%06d.png -vcodec libx264 -r "\
+def generateVideo(frame_save_path='./hideSource',output_path='./test.mp4',frame_rate=5):
+    generateCode = "ffmpeg -framerate "+str(frame_rate)+" -i "+frame_save_path+"\%d.png -vcodec libx264 -r "\
                    +str(frame_rate)+" -pix_fmt yuv420p "+output_path
     ffmpegProcess(generateCode)
 
